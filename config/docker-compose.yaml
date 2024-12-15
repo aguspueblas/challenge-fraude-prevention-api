@@ -1,0 +1,38 @@
+version: "3"
+services:
+  data-base-pg:
+    image: postgres:latest #Imagen de Docker a usar: postgres
+    environment: #variables de entorno.
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: challenge-meli
+    ports: #puerto donde se ejecuta docker data-base
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .. #El punto indica que debe leer el archivo DockerfiLe para construir la imagen.
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: data-base-pg
+      DB_USER: admin
+      DB_PASWWORD: admin123
+      DB_NAME: challenge-meli
+      DB_PORT: 5432
+    depends_on:
+      - data-base-pg
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

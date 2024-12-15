@@ -1,0 +1,70 @@
+openapi: 3.0.2
+info:
+  title: Estructura base para repositorios de APIBANKING.
+  version: 1.0.0
+  description: Se disponibiliza este modelo con una estructura basica para los nuevos repositorios APIBANKING que utilicen Nodejs junto con express.
+paths:
+  /ping:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                OK:
+                  value:
+                    message: pong
+          description: Ejemplo
+      security:
+        - access_token: []
+      operationId: ping
+      summary: Ping
+components:
+  schemas:
+    ErrorResponse:
+      description: ""
+      required:
+        - message
+        - error_code
+      type: object
+      properties:
+        message:
+          description: Descripcion del error
+          type: string
+        error_code:
+          description: Código que representa el error que se produjo
+          type: string
+        details:
+          description: Detalle del error
+          type: object
+  responses:
+    INTERNAL_SERVER_ERROR:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            INTERNAL_SERVER_ERROR:
+              value:
+                message: Unexpected error. Please try again.
+                error_code: internal_server_error
+      description: Internar server error.
+    UNAUTHORIZED_RESPONSE:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            TOKEN_EXPIRED:
+              value:
+                message: The token provided already expired
+                error_code: token_expired
+            INVALID_CREDENTIALS:
+              value:
+                message: Invalid or missing credentials
+                error_code: invalid_credentials
+      description: Unauthorized.
+  securitySchemes:
+    access_token:
+      scheme: bearer
+      type: http
