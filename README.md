@@ -14,11 +14,13 @@ Antes de comenzar, asegúrate de tener los siguientes requisitos previos instala
 
 ## Pasos para Levantar la API
 
+Por favor si ocurre algun inconveniente en este punto no duden en mandarme email: agustincesarpueblas@gmail.com. 
+
 ### 1. Clonar el Repositorio
     Url del repositorio en GITHUB: https://github.com/aguspueblas/challenge-fraude-prevention-api 
 
 ### 2. Construir imagenes de Docker.
- Ubicado en src/database/config 
+ Ubicado en src/config 
  * Ejecutar el comando: docker-compose build
 
 ### 3. Ejecutar contenedores.
