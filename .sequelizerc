@@ -1,9 +1,8 @@
-
 const path = require('path');
 
 module.exports = {
-    config: path.resolve(__dirname, 'src', 'api', 'database', 'config.js'),
-    'models-path': path.resolve(__dirname, 'src', 'api','database', 'models'),
-    'seeders-path': path.resolve(__dirname, 'src', 'api', 'database', 'seeders'),
-    'migrations-path': path.resolve(__dirname, 'src', 'api', 'database', 'migrations'),
+    config: path.resolve('src', 'database', 'config', 'config.js'), // Ubicación correcta del archivo de configuración
+    modelsPath: path.resolve('src', 'database', 'models'),
+    migrationsPath: path.resolve('src', 'database', 'migrations'),
+    seedersPath: path.resolve('src', 'database', 'seeders'),
 };

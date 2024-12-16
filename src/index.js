@@ -5,6 +5,8 @@ const cors = require("cors");
 const { NotFoundResponse } = require("./api/responses");
 const { Routes } = require("./api/routes");
 const { overWriteLogs } = require("./helpers/logger"); //Wraps console log
+const { Sequelize } = require("sequelize");
+const config = require("./database/config/config");
 overWriteLogs();
 
 const getExpressPort = () => {
@@ -29,6 +31,16 @@ const middlewares = [
   express.urlencoded({ extended: true }),
 ];
 
+//Conexion con sequelize.
+const sequelize = new Sequelize(config.development);
+(async () => {
+  try {
+    await sequelize.authenticate(); // Intenta hacer la conexión
+    console.log('Conexión a la base de datos establecida con éxito.');
+  } catch (error) {
+    console.error('No se pudo conectar a la base de datos:', error);
+  }
+})();
 app.use(middlewares);
 app.use("/", Routes);
 app.use("*", (req, res) => {

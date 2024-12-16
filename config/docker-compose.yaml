@@ -1,6 +1,6 @@
-version: "3"
 services:
   data-base-pg:
+    container_name: database-pg
     image: postgres:latest #Imagen de Docker a usar: postgres
     environment: #variables de entorno.
       POSTGRES_USER: admin
@@ -14,6 +14,7 @@ services:
       - app-network
 
   app:
+    container_name: challenge-meli-api
     build:
       context: .. #El punto indica que debe leer el archivo DockerfiLe para construir la imagen.
       dockerfile: Dockerfile
@@ -23,13 +24,15 @@ services:
       DB_PASWWORD: admin123
       DB_NAME: challenge-meli
       DB_PORT: 5432
+      NODE_ENV: development
     depends_on:
       - data-base-pg
     ports:
       - "3000:3000"
     networks:
       - app-network
-
+    command: ["sh", "-c", "dockerize -wait tcp://data-base-pg:5432 -timeout 30s && npm run migrate && npm start"]
+      
 volumes:
   postgres_data:
 

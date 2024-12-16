@@ -12,7 +12,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "lint-and-format": "npm run lint:fix && npm run format"
+    "lint-and-format": "npm run lint:fix && npm run format",
+    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "migrate:revert": "npx sequelize-cli db:migrate:undo:all"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,7 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
+    "esm": "^3.2.25",
     "express": "^4.21.2",
     "helmet": "^8.0.0",
     "morgan": "^1.10.0",
