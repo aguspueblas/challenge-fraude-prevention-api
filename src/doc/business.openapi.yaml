@@ -1,8 +1,7 @@
 openapi: 3.0.2
 info:
-  title: Estructura base para repositorios de APIBANKING.
+  title: Fraud
   version: 1.0.0
-  description: Se disponibiliza este modelo con una estructura basica para los nuevos repositorios APIBANKING que utilicen Nodejs junto con express.
 paths:
   /ping:
     get:
@@ -19,8 +18,93 @@ paths:
         - access_token: []
       operationId: ping
       summary: Ping
+  /v1/fraud/prevention/individuals/analytics:
+    get:
+      tags:
+        - Fraude prevention
+      description: |
+                    Se tienen en cuentas las siguientes reglas sobre los usuarios: (**Esto con el fin de prevenir el fraude.**)
+                    - Nuevos usuarios. (usuarios con antiguedad en nuestro sistema < 7 dias.)
+                    - Cantidad de pagos rechazados en el último día.
+                    - Monto acumulado total (en usd) de pagos por usuario en la última semana.
+      summary: API analitica de los usuarios.
+      parameters:
+        - $ref: '#/components/parameters/PaginationPage'
+        - $ref: '#/components/parameters/PaginationLimit'
+      responses:
+        '200':
+          description: Respuesta exitosa.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/GetFraudPreventionAnalyticsResponse'
+        '401':
+          description: Unauthorized
+          $ref: '#/components/responses/UNAUTHORIZED_RESPONSE'
+        '500':
+          description: Internal server error.
+          $ref: '#/components/responses/INTERNAL_SERVER_ERROR'
 components:
   schemas:
+    RuleResponse:
+      description: Reglas para evitar el fraude tecnologico.
+      type: object
+      required:
+        - user_id
+        - is_new_user
+        - qty_rejected_1d
+        - total_amt_7d
+      properties:
+        user_id:
+          description: Identificador del usuarios.
+          type: integer
+          example: 1
+        is_new_user:
+          description: |
+                        Indica si el usuario es considerado "nuevo" basado en la fecha de creación de su cuenta.
+                        - **true**: El usuario tiene menos de 7 días desde su registro.
+                        - **false**: El usuario tiene más de 7 días desde su registro.
+          type: boolean
+          example: true
+        qty_rejected_1d:
+          description: Cantidad de pagos rechazados en el último dia.
+          type: integer
+          example: 5
+        total_amt_7d:
+          description: Monto acumulado total (en usd) de pagos por usuario en la última semana.
+          type: number
+          example: 100.5
+    GetFraudPreventionAnalyticsResponse: 
+      description: Respuesta con paginado y datos.
+      type: object
+      required:
+        - page
+        - per_page
+        - total_pages
+        - total_count
+        - data
+      properties:
+        page:
+          type: integer
+          description: Página actual.
+          example: 1
+        per_page:
+          type: integer
+          description: Cantidad de elementos por página.
+          example: 10
+        total_pages:
+          type: integer
+          description: Número total de páginas disponibles.
+          example: 10
+        total_count:
+          type: integer
+          description: Número total de elementos disponibles.
+          example: 50
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleResponse'
+
     ErrorResponse:
       description: ""
       required:
@@ -55,15 +139,32 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
           examples:
-            TOKEN_EXPIRED:
-              value:
-                message: The token provided already expired
-                error_code: token_expired
             INVALID_CREDENTIALS:
               value:
                 message: Invalid or missing credentials
                 error_code: invalid_credentials
       description: Unauthorized.
+  parameters:
+    PaginationPage:
+      description: Indica el número de página. 
+      name: page
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        default: 1
+    PaginationLimit:
+      description: Indica el número de elementos que se devolverán en la página
+      name: limit
+      in: query
+      required: false
+      example: 10
+      schema:
+        type: integer
+        default: 10
+        
+      
   securitySchemes:
     access_token:
       scheme: bearer
