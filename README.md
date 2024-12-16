@@ -1,28 +1,37 @@
-Levantar imagen de Docker.
+# Levantar la API con Docker
 
-PRE-REQUISITOS: 1. Tener Docker instalado. 2. Docker debe estar encendido.
+Este documento proporciona los pasos necesarios para levantar la API utilizando Docker y Docker Compose, incluyendo la base de datos PostgreSQL. La configuración está preparada para ser ejecutada en entornos de desarrollo.
 
-INFO ADICIONAL: - Tener en cuenta que cualquier cambio que se realice en el archivo Docker File va a necesitar volver a construir la imagen.
+## Requisitos Previos
 
-PASO 1:
-1.1. Construir la imagen del repositorio en Docker con el comando - docker build -t mi-api-rest .
-_Observación_ Reemplazar mi-api-rest por el nombre del repositorio.
-1.2. Una vez finalido el proceso chequear la creación de la imagen con el comando: - docker images
-En el listado devuelvo por la consola debería existir un registro con el nombre del repositorio seleccionado en el PASO 1.
-PASO 2:
-2.1. Para utilizar la imagen se debe ejecutar un contenedor.
-docker run -p 3000:3000 mi-api-rest
-Detalles del comando:
-_ -p 3000:3000: Expone el puerto 3000 del contenedor en tu máquina host para que puedas acceder a la API.
-_ mi-api-rest: Es el nombre que le asignaste a la imagen con docker build.
-2.2. Verificar que el contenendor esté corriendo:
-docker ps
-Deberías ver algo como esto:
-CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
-<container_id> mi-api-rest "npm start" 5 seconds ago Up 3 seconds 0.0.0.0:3000
-2.3. Si el contenedor se esta ejecutando correctamente la imagen ya esta disponible para ser utilizada.
+Antes de comenzar, asegúrate de tener los siguientes requisitos previos instalados en tu máquina:
 
-PASO 3:
-3.1 Cuando se termine de utilizar se debe detener el container.
-Ejecutar: docker ps \* Copiar el CONTAINER ID.
-docker stop CONTAINER_ID (Colpcar el ID obteniendo con el comando docker ps.)
+- **Docker**: [Descargar Docker](https://docs.docker.com/get-docker/)
+- **Docker Compose**: [Descargar Docker Compose](https://docs.docker.com/compose/install/)
+- **Node.js** y **npm**.
+
+---
+
+## Pasos para Levantar la API
+
+### 1. Clonar el Repositorio
+    Url del repositorio en GITHUB: https://github.com/aguspueblas/challenge-fraude-prevention-api 
+
+### 2. Construir imagenes de Docker.
+ Ubicado en src/database/config 
+ * Ejecutar el comando: docker-compose build
+
+### 3. Ejecutar contenedores.
+Para iniciar los contenedores para poder utilizar los servicios de la API ejecutar:
+ * docker-compose up -d (-d ejecución en segundo plano).
+ * Chequear que las imagenes se crearon con exito utilizando el comando: *docker ps*. 
+ Ejemplo:
+     CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS          PORTS                    NAMES
+    27b141a16db8   config-app        "docker-entrypoint.s…"   18 minutes ago   Up 18 minutes   0.0.0.0:3000->3000/tcp   challenge-meli-api
+    1f033097d90a   postgres:latest   "docker-entrypoint.s…"   18 minutes ago   Up 18 minutes   0.0.0.0:5432->5432/tcp   database-pg
+
+### 4. Detener los Contenedores
+Cuando hayas terminado de trabajar, puedes detener los contenedores con:
+    * docker-compose down
+    Este comando detendrá los contenedores sin eliminar los volúmenes. Si deseas eliminar los volúmenes (por ejemplo, borrar la base de datos), puedes hacerlo con:
+    * docker-compose down -v 
