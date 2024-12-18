@@ -25,14 +25,20 @@ services:
       DB_NAME: challenge-meli
       DB_PORT: 5432
       NODE_ENV: development
+      API_KEY: YWNhMDI5YzYtYWY2NC00ODYwLWEwMTUtNjMxMjdlODBiYTM1
     depends_on:
       - data-base-pg
     ports:
       - "3000:3000"
     networks:
       - app-network
-    command: ["sh", "-c", "dockerize -wait tcp://data-base-pg:5432 -timeout 30s && npm run migrate && npm start"]
-      
+    command:
+      [
+        "sh",
+        "-c",
+        "dockerize -wait tcp://data-base-pg:5432 -timeout 30s && npm run migrate && npm start",
+      ]
+
 volumes:
   postgres_data:
 

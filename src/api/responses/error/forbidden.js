@@ -23,11 +23,6 @@ class Forbidden {
     this.#message = "Invalid or missing credentials";
     this.#errorCode = "invalid_credentials";
   }
-
-  setTokenExpiredResponse() {
-    this.#message = "The token provided already expired";
-    this.#errorCode = "token_expired";
-  }
 }
 
 exports.ForbiddenResponse = Forbidden;

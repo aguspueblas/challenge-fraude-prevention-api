@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node --harmony --trace-warnings -r dotenv/config src/index.js",
-    "start:dev": "cross-env NODE_ENV=local node --watch --trace-warnings -r dotenv/config src/index.js",
+    "start:dev": "cross-env NODE_ENV=development node --watch --trace-warnings -r dotenv/config src/index.js",
     "test": "NODE_ENV=development nyc --exclude=test --reporter=text mocha -r dotenv/config --recursive test/ --reporter spec ",
     "test:local": "nyc --exclude=test --reporter=lcov --reporter=text  mocha -r dotenv/config --recursive test/**/*test.js --reporter spec --exit",
     "test:coverage": "nyc report --statements 80 --functions 80 --lines 80 --branches 80 --check-coverage --reporter=text-summary --per-file;exit 0",
@@ -26,6 +26,7 @@
     "dotenv": "^16.4.7",
     "esm": "^3.2.25",
     "express": "^4.21.2",
+    "express-validator": "^7.2.0",
     "helmet": "^8.0.0",
     "morgan": "^1.10.0",
     "msw": "^2.6.8",
@@ -35,6 +36,7 @@
     "sequelize": "^6.37.5",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.3",
+    "uuid-base64": "^1.0.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {

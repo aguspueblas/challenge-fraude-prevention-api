@@ -1,28 +1,28 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('Users', [
+  async up(queryInterface, Sequelize) {
+    await queryInterface.bulkInsert("Users", [
       {
-        country: 'Argentina',
+        country: "Argentina",
         createdAt: new Date(), // Agregar createdAt
         updatedAt: new Date(),
       },
       {
-        country: 'España',
+        country: "España",
         createdAt: new Date(), // Agregar createdAt
         updatedAt: new Date(),
       },
       {
-        country: 'Brazil',
+        country: "Brazil",
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
+      },
     ]);
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Users', null, {});
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.bulkDelete("Users", null, {});
+  },
 };

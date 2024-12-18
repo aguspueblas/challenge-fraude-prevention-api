@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  title: Fraud
+  title: Contract for fraud prevention APIS.
   version: 1.0.0
 paths:
   /ping:
@@ -23,27 +23,28 @@ paths:
       tags:
         - Fraude prevention
       description: |
-                    Se tienen en cuentas las siguientes reglas sobre los usuarios: (**Esto con el fin de prevenir el fraude.**)
-                    - Nuevos usuarios. (usuarios con antiguedad en nuestro sistema < 7 dias.)
-                    - Cantidad de pagos rechazados en el último día.
-                    - Monto acumulado total (en usd) de pagos por usuario en la última semana.
+        Se tienen en cuentas las siguientes reglas sobre los usuarios:
+        - Nuevos usuarios. (usuarios con antiguedad en nuestro sistema < 7 dias.)
+        - Cantidad de pagos rechazados en el último día.
+        - Monto acumulado total (en usd) de pagos por usuario en la última semana.
       summary: API analitica de los usuarios.
       parameters:
-        - $ref: '#/components/parameters/PaginationPage'
-        - $ref: '#/components/parameters/PaginationLimit'
+        - $ref: "#/components/parameters/HeaderApiKey"
+        - $ref: "#/components/parameters/PaginationPage"
+        - $ref: "#/components/parameters/PaginationLimit"
       responses:
-        '200':
+        "200":
           description: Respuesta exitosa.
           content:
             application/json:
-              schema: 
-                $ref: '#/components/schemas/GetFraudPreventionAnalyticsResponse'
-        '401':
+              schema:
+                $ref: "#/components/schemas/GetFraudPreventionAnalyticsResponse"
+        "401":
           description: Unauthorized
-          $ref: '#/components/responses/UNAUTHORIZED_RESPONSE'
-        '500':
+          $ref: "#/components/responses/UNAUTHORIZED_RESPONSE"
+        "500":
           description: Internal server error.
-          $ref: '#/components/responses/INTERNAL_SERVER_ERROR'
+          $ref: "#/components/responses/INTERNAL_SERVER_ERROR"
 components:
   schemas:
     RuleResponse:
@@ -61,9 +62,9 @@ components:
           example: 1
         is_new_user:
           description: |
-                        Indica si el usuario es considerado "nuevo" basado en la fecha de creación de su cuenta.
-                        - **true**: El usuario tiene menos de 7 días desde su registro.
-                        - **false**: El usuario tiene más de 7 días desde su registro.
+            Indica si el usuario es considerado "nuevo" basado en la fecha de creación de su cuenta.
+            - **true**: El usuario tiene menos de 7 días desde su registro.
+            - **false**: El usuario tiene más de 7 días desde su registro.
           type: boolean
           example: true
         qty_rejected_1d:
@@ -74,7 +75,7 @@ components:
           description: Monto acumulado total (en usd) de pagos por usuario en la última semana.
           type: number
           example: 100.5
-    GetFraudPreventionAnalyticsResponse: 
+    GetFraudPreventionAnalyticsResponse:
       description: Respuesta con paginado y datos.
       type: object
       required:
@@ -103,7 +104,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/RuleResponse'
+            $ref: "#/components/schemas/RuleResponse"
 
     ErrorResponse:
       description: ""
@@ -146,7 +147,7 @@ components:
       description: Unauthorized.
   parameters:
     PaginationPage:
-      description: Indica el número de página. 
+      description: Indica el número de página.
       name: page
       in: query
       required: false
@@ -163,8 +164,15 @@ components:
       schema:
         type: integer
         default: 10
-        
-      
+    HeaderApiKey:
+      name: api-key
+      description: Mecanismo de seguridad para poder acceder a la API.
+      in: header
+      required: true
+      schema:
+        type: string
+      example: Z1AhMDI5YzYtYWY2NC00ODYwLWEwMTUtNjMxMjdlODBiYTM1
+
   securitySchemes:
     access_token:
       scheme: bearer
