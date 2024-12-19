@@ -13,19 +13,32 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:latest  # Utiliza la última versión de la imagen oficial de Redis
+    container_name: redis-container
+    ports:
+      - "6379:6379"  # Mapea el puerto de Redis para que sea accesible en tu máquina
+    environment:
+      - REDIS_PASSWORD=adminredis  # Si necesitas contraseña, añade una
+    volumes:
+      - redis-data:/data  # Volumen persistente para los datos de Redis
+
   app:
     container_name: challenge-meli-api
     build:
       context: .. #El punto indica que debe leer el archivo DockerfiLe para construir la imagen.
       dockerfile: Dockerfile
     environment:
-      DB_HOST: data-base-pg
-      DB_USER: admin
-      DB_PASWWORD: admin123
-      DB_NAME: challenge-meli
-      DB_PORT: 5432
-      NODE_ENV: development
-      API_KEY: YWNhMDI5YzYtYWY2NC00ODYwLWEwMTUtNjMxMjdlODBiYTM1
+      - DB_HOST=data-base-pg
+      - DB_USER=admin
+      - DB_PASWWORD=admin123
+      - DB_NAME=challenge-meli
+      - DB_PORT= 5432
+      - NODE_ENV=development
+      - API_KEY=YWNhMDI5YzYtYWY2NC00ODYwLWEwMTUtNjMxMjdlODBiYTM1
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=adminredis
     depends_on:
       - data-base-pg
     ports:
@@ -41,6 +54,7 @@ services:
 
 volumes:
   postgres_data:
+  redis-data:
 
 networks:
   app-network:

@@ -1,8 +1,8 @@
 const { http } = require("msw");
 const { setupServer } = require("msw/node");
 
-const HandlersArch = require("./arch/arch-handler");
+const HandlerConnectors = require('./handler-connectors')
 module.exports = {
-  Msw: setupServer(...HandlersArch),
+  Msw: setupServer(...HandlerConnectors),
   http: http,
 };

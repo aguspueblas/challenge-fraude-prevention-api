@@ -1,5 +1,4 @@
 const express = require("express");
-const router = express.Router();
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -9,6 +8,7 @@ const { overWriteLogs } = require("./helpers/logger"); //Wraps console log
 const { Sequelize } = require("sequelize");
 const configEnv = require("../config/env");
 const config = require("./database/config/config");
+const redis = require("../config/redis.config");
 overWriteLogs();
 const PORT = configEnv.SERVER.PORT;
 const morganMiddleware = morgan("combined", {
@@ -25,7 +25,13 @@ const middlewares = [
   express.json(),
   express.urlencoded({ extended: true }),
 ];
-
+//Conexion con redis.
+redis.ping()
+  .then(() => console.log('Redis está disponible'))
+  .catch((error) => {
+    console.error('No se puede conectar con Redis:', error);
+    res.status(500).send('Error al conectar con Redis');
+  });
 //Conexion con sequelize.
 const sequelize = new Sequelize(config[configEnv.SERVER.NODE_ENV]);
 (async () => {
