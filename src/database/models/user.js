@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
+      user_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
       country: {
         type: DataTypes.STRING,
         allowNull: null,
@@ -24,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "users",
+      modelName: "User",
       timestamps: true,
     },
   );

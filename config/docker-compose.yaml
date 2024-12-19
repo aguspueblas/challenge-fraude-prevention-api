@@ -14,14 +14,14 @@ services:
       - app-network
 
   redis:
-    image: redis:latest  # Utiliza la última versión de la imagen oficial de Redis
+    image: redis:latest # Utiliza la última versión de la imagen oficial de Redis
     container_name: redis-container
     ports:
-      - "6379:6379"  # Mapea el puerto de Redis para que sea accesible en tu máquina
+      - "6379:6379" # Mapea el puerto de Redis para que sea accesible en tu máquina
     environment:
-      - REDIS_PASSWORD=adminredis  # Si necesitas contraseña, añade una
+      - REDIS_PASSWORD=adminredis # Si necesitas contraseña, añade una
     volumes:
-      - redis-data:/data  # Volumen persistente para los datos de Redis
+      - redis-data:/data # Volumen persistente para los datos de Redis
 
   app:
     container_name: challenge-meli-api

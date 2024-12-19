@@ -1,3 +1,6 @@
+const {
+  V1FraudPreventionIndividualsAnalyticsService,
+} = require("../../services");
 const { OkResponse } = require("../responses");
 
 class V1FPIndividualsAnalyticsController {
@@ -9,9 +12,11 @@ class V1FPIndividualsAnalyticsController {
 
   async handler(req, res, next) {
     try {
+      const service = new V1FraudPreventionIndividualsAnalyticsService();
+      const serviceResponse = await service.execute(req, res, next);
       // Lógica de negocio (por ahora solo devolvemos un 'ok')
       const okResponse = new OkResponse();
-      okResponse.setCustomResponse('ok');
+      okResponse.setCustomResponse(serviceResponse);
       const response = okResponse.getResponse();
       return res.status(response.statusCode).json(response.body);
     } catch (error) {

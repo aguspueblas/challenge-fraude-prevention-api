@@ -16,14 +16,13 @@ const ConfigEnv = {
     NODE_ENV: process.env.NODE_ENV || "development", // Entorno de ejecución (dev, prod, qa)
   },
   RAPID_API: {
-    API_KEY: process.env.RAPID_API_KEY
+    API_KEY: process.env.RAPID_API_KEY,
   },
   REDIS: {
-    host: process.env.REDIS_HOST || 'localhost', // Cambiar por la IP del contenedor si usas Docker
-    port: process.env.REDIS_PORT || 6379,       // Puerto por defecto de Redis
-    password: process.env.REDIS_PASSWORD || null // Si tienes contraseña, añádela aquí
-
-  }
+    host: process.env.REDIS_HOST || "localhost", // Cambiar por la IP del contenedor si usas Docker
+    port: process.env.REDIS_PORT || 6379, // Puerto por defecto de Redis
+    password: process.env.REDIS_PASSWORD || null, // Si tienes contraseña, añádela aquí
+  },
 };
 
 module.exports = ConfigEnv;

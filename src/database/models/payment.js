@@ -10,14 +10,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // Definir la asociación: Un pago pertenece a un usuario
       Payment.belongsTo(models.User, {
-        foreignKey: "userId", // Clave foránea en la tabla Payment
+        foreignKey: "user_id", // Clave foránea en la tabla Payment
         as: "user", // Alias para acceder al usuario desde un pago
       });
     }
   }
   Payment.init(
     {
-      user_id: DataTypes.STRING,
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       state: DataTypes.STRING,
       local_currency: DataTypes.STRING,
       amount: DataTypes.FLOAT,

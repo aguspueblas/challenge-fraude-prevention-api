@@ -5,22 +5,21 @@ const path = require("path");
 const Sequelize = require("sequelize");
 const process = require("process");
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../config/config.json")[env];
+const env = process.env.NODE_ENV || "development"; // Obtenemos el entorno
+const config = require(__dirname + "/../config/config.js")[env]; // Requerimos el archivo JS
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config,
-  );
-}
 
+// Creamos una nueva instancia de Sequelize usando la configuración
+sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config,
+);
+
+// Leemos todos los modelos en la carpeta 'models' y los cargamos
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
@@ -38,6 +37,7 @@ fs.readdirSync(__dirname)
     db[model.name] = model;
   });
 
+// Si los modelos tienen asociaciones, las configuramos aquí
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);

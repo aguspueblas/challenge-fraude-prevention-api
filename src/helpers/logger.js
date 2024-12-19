@@ -6,10 +6,10 @@ const {
 const winston = require("winston");
 const { combine, printf } = winston.format;
 const path = require("path");
+const moment = require("moment-timezone");
 
 const formatDate = () => {
-  const date = new Date();
-  return date.toISOString();
+  return moment().subtract(3, "h").toISOString();
 };
 
 const getLogInfo = (previousLevel = 2, consolePadding = 8) => {
