@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { User, Payment } = require("../../database/models");
 
 class UserService {
@@ -6,7 +7,13 @@ class UserService {
     this.#userModel = User;
   }
 
-  async getUsersWithPagination(page, limit, order = "ASC") {
+  async getUsersWithPaginationAndPaymentsBetweenDates(
+    page,
+    limit,
+    order = "ASC",
+    fromDate,
+    toDate,
+  ) {
     try {
       const queryResult = await this.#userModel.findAndCountAll({
         limit,
@@ -14,6 +21,20 @@ class UserService {
         order: [
           ["createdAt", order], // Ordenar por la columna 'createdAt' en orden descendente
         ],
+        include: [
+          {
+            model: Payment,
+            as: "payments",
+            where: {
+              createdAt: {
+                [Op.gte]: fromDate,
+                [Op.lt]: toDate,
+              },
+            },
+            required: false,
+          },
+        ],
+        distinct: true,
       });
       const totalPages = Math.ceil(queryResult.count / limit);
       return {
@@ -26,7 +47,7 @@ class UserService {
         },
       };
     } catch (error) {
-      console.error("Error al obtener usuarios paginados:", error);
+      console.error("Error al obtener usuarios paginados:", error.message);
       throw error;
     }
   }

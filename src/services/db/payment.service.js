@@ -7,15 +7,21 @@ class PaymentService {
   constructor() {
     this.#paymentModel = Payment;
   }
-
-  async getPaymentLastDayByUser(userId) {
+  /**
+   * Metodo para obtener pagos por usuario en un rango de fechas.
+   * @param {*} userId usuario.
+   * @param {*} fromDate fecha desde
+   * @param {*} toDate  fecha hasta
+   * @returns
+   */
+  async getPaymentsFromData(userId, fromDate, toDate) {
     try {
-      const countPayments = await this.#paymentModel.count({
+      const countPayments = await this.#paymentModel.findAll({
         where: {
           user_id: userId, // Filtro por ID de usuario
           createdAt: {
-            [Op.gte]: moment().subtract(1, "d"), // Mayor o igual que ayer
-            [Op.lt]: moment(), // Menor que hoy
+            [Op.gte]: fromDate.toDate(), //Mayor que
+            [Op.lt]: toDate.toDate(), // Menor que
           },
           state: PAYMENT_STATUS.REFUSED,
         },

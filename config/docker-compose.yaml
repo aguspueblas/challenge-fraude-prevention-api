@@ -22,6 +22,8 @@ services:
       - REDIS_PASSWORD=adminredis # Si necesitas contraseña, añade una
     volumes:
       - redis-data:/data # Volumen persistente para los datos de Redis
+    networks:
+      - app-network
 
   app:
     container_name: challenge-meli-api

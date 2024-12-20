@@ -1,58 +1,99 @@
+const { PAYMENT_STATUS } = require("../helpers/constants");
+const { getKeyRedis, setKeyRedis } = require("../helpers/utils");
 const PaymentService = require("./db/payment.service");
 const UserService = require("./db/user.service");
 const moment = require("moment-timezone");
+const GetCurrencyConverterService = require("./get-currency-converter.service");
+const { ErrorConstructor } = require("../helpers/error-constructor");
+const GetCurrencyConverteConnector = require("./connectors/get-currency-converter.connector");
+
 class V1FraudPreventionIndividualsAnalyticsService {
   #userService;
   #paymentService;
+  #currencyConverterService;
+  #currentDate = moment().endOf("day");
+  #dateSubtractSevenDays = moment().subtract(7, "days").startOf("day");
+
   constructor() {
     this.#userService = new UserService();
     this.#paymentService = new PaymentService();
+    this.#currencyConverterService = new GetCurrencyConverterService();
   }
 
   async execute(req, res, next) {
-    const { page = 1, limit = 10 } = req.query;
-    //1.Obtener lista de usuarios con paginacion
-    const usersWithPagination = await this.#userService.getUsersWithPagination(
-      page,
-      limit,
-    );
-    const data = await this.#buildDataResponse(usersWithPagination.users);
-    return this.#buildResponse(usersWithPagination.pagination, data);
-    //2.Trabajar sobre esa lista
-    //3. RESPONSE
+    try {
+      const { page = 1, limit = 10 } = req.query;
+      const usersWithPagination =
+        await this.#userService.getUsersWithPaginationAndPaymentsBetweenDates(
+          page,
+          limit,
+          "ASC",
+          this.#dateSubtractSevenDays.toDate(),
+          this.#currentDate.toDate(),
+        );
+      const data = await this.#buildData(usersWithPagination.users);
+      // return this.#buildResponse(usersWithPagination.pagination, data);
+      return data;
+    } catch (error) {
+      console.error(error.message);
+      throw error;
+    }
   }
 
-  async #buildDataResponse(users) {
-    const currentDate = moment();
-    const data = await Promise.all(
-      users.map(async (user) => {
-        const data = user.dataValues;
-        return {
-          user_id: data.user_id,
-          is_new_user: this.#isNewUser(data.createdAt),
-          qty_rejected_1d: await this.#getRejectedPaymentLasDay(data.user_id), //Cantidad de pagos rechazados en el último dia.
-          //total_amt_7d //Monto acumulado total (en usd) de pagos por usuario en la última semana.
-        };
-      }),
-    );
-    return data;
+  async #buildData(users) {
+    const response = [];
+    for (const user of users){
+      const data = user.dataValues;
+      const rulesPaymets = await this.#applyRulesForPayments(data.payments);
+      response.push({
+        user_id: data.user_id,
+        is_new_user: this.#isNewUser(data.createdAt),
+        qty_rejected_1d: rulesPaymets.countPaymentRejectedLastDay, //Cantidad de pagos rechazados en el último dia.
+        total_amt_7d: rulesPaymets.totalAmountUsd, // Monto total en USD de pagos no rechazados
+      });
+    }    
+    return response;
   }
 
   #isNewUser(userCreationDate) {
-    const momentSubtractSevenDays = moment().subtract(7, "days");
     const userCreationDateFormat = moment(userCreationDate);
-    return userCreationDateFormat.isAfter(momentSubtractSevenDays);
+    return userCreationDateFormat.isAfter(this.#dateSubtractSevenDays);
   }
 
-  #getRejectedPaymentLasDay(userId) {
-    try {
-      const response = this.#paymentService.getPaymentLastDayByUser(userId);
-      console.info(response);
-      return response;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+  async #applyRulesForPayments(userPayments) {
+    const dateSubtractOneDay = this.#currentDate
+      .subtract(1, "d")
+      .startOf("day"); // Un día atrás desde la fecha actual
+    let totalAmountUsd = 0; // Para almacenar el monto total en USD
+    let countPaymentRejectedLastDay = 0; // Contador de pagos rechazados en el último día
+    
+    for (const payment of userPayments) {
+      const data = payment.dataValues;
+      const paymentDate = moment(data.createdAt);
+      //Chequea que el pago sea del ultimo dia y que este en rechazado.
+      if (data.state == PAYMENT_STATUS.REFUSED) {
+        if (paymentDate.isAfter(dateSubtractOneDay)) {
+          countPaymentRejectedLastDay += 1;
+          continue;
+        }
+      } else {
+        //Si no es un pago rechazado.
+        if (data.state !== PAYMENT_STATUS.REFUSED) {
+          const paymentCurrency = data.local_currency;
+          if (paymentCurrency !== "USD") {
+            const rate = await this.#currencyConverterService.getRate(
+              paymentCurrency,
+              "USD",
+            );
+            totalAmountUsd = data.amount * rate;
+          } else {
+            totalAmountUsd = data.amount;
+          }
+        }
+      }
+    };
+
+    return { countPaymentRejectedLastDay, totalAmountUsd };
   }
 
   #buildResponse(pagination, data) {
@@ -66,4 +107,5 @@ class V1FraudPreventionIndividualsAnalyticsService {
     };
   }
 }
+
 module.exports = V1FraudPreventionIndividualsAnalyticsService;
