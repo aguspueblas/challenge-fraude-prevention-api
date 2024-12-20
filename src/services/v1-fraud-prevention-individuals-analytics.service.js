@@ -32,8 +32,7 @@ class V1FraudPreventionIndividualsAnalyticsService {
           this.#currentDate.toDate(),
         );
       const data = await this.#buildData(usersWithPagination.users);
-      // return this.#buildResponse(usersWithPagination.pagination, data);
-      return data;
+      return this.#buildResponse(usersWithPagination.pagination, data);
     } catch (error) {
       console.error(error.message);
       throw error;
