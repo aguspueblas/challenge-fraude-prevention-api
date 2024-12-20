@@ -12,6 +12,14 @@ Los servicios principales de la API incluyen:
 
 Revisar el archivo env.example.
 
+## Seguridad de la API - Autenticación con API Key
+
+La API está protegida mediante autenticación por **API Key**. Esto significa que cada solicitud debe incluir una clave de API válida en los encabezados de la solicitud.
+
+### ¿Cómo enviar la clave de API?
+
+La clave de API debe enviarse en el encabezado de la solicitud bajo el nombre `api-key`.
+
 ## Documentación del repositorio.
 
 Este proyecto cuenta con su documentación en la ruta: /doc.
