@@ -3,6 +3,7 @@ const {
   ConflictResponse,
   PreconditionFailedResponse,
   NotFoundResponse,
+  ServiceUnavailableResponse,
 } = require("../../responses");
 class ErrorHandler {
   constructor() {
@@ -19,15 +20,17 @@ class ErrorHandler {
       const conflictResponse = new ConflictResponse();
       const preconditionFailedResponse = new PreconditionFailedResponse();
       const notFoundResponse = new NotFoundResponse();
+      const serviceUnavailableResponse = new ServiceUnavailableResponse();
       const errorFinders = [
         conflictResponse.getIfIsConflictError.bind(conflictResponse),
         preconditionFailedResponse.getIsPreconditionFailed.bind(
           preconditionFailedResponse,
         ),
         notFoundResponse.getIfIsNotFoundError.bind(notFoundResponse),
+        serviceUnavailableResponse.getIsServiceUnavailableError.bind(serviceUnavailableResponse),
       ];
       for (const errorFunction of errorFinders) {
-        const errorDetails = errorFunction(err.code, err.details);
+        const errorDetails = errorFunction(err.code, err.dextails);
         if (errorDetails) {
           return res
             .status(errorDetails.statusCode)
