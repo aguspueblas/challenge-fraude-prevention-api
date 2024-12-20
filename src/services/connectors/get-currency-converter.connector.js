@@ -1,6 +1,7 @@
 const ConfigEnv = require("../../../config/env");
 const axios = require("axios");
 const https = require("https");
+const { ErrorConstructor } = require("../../helpers/error-constructor");
 class GetCurrencyConverteConnector {
   #url;
   #params;
@@ -33,18 +34,17 @@ class GetCurrencyConverteConnector {
       headers: this.#getHeaders(),
       httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     };
-
     return axios(options)
       .then((response) => {
         console.info("Convertidor de moneda respondio con éxito.", response.data);
         return response.data;
       })
       .catch((error) => {
-        console.erroFr(
+        console.error(
           "Ocurrio un error en CURRENCY-CONVERTER-CONTROLLER.js:",
-          error,
+          error.response,
         );
-        throw error;
+        throw ErrorConstructor('error-converter', error.message,)
       });
   }
 }
