@@ -25,7 +25,9 @@ class GetCurrencyConverteConnector {
       language: "en",
     };
   }
-
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   async callConnector() {
     const options = {
       method: "GET",
@@ -34,6 +36,8 @@ class GetCurrencyConverteConnector {
       headers: this.#getHeaders(),
       httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     };
+    //Se aplica este delay porque la API de conversión no permite peticiones seguidas. Esto se debe a que tengo el plan free.
+    await this.delay(1000);
     return axios(options)
       .then((response) => {
         console.info("Convertidor de moneda respondio con éxito.", response.data);

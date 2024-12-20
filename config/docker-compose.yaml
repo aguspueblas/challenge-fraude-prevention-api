@@ -51,7 +51,7 @@ services:
       [
         "sh",
         "-c",
-        "dockerize -wait tcp://data-base-pg:5432 -timeout 30s && npm run migrate && npm start",
+        "dockerize -wait tcp://data-base-pg:5432 -timeout 30s && npm run migrate:revert && npm run migrate && npm start",
       ]
 
 volumes:

@@ -1,3 +1,17 @@
+## Descripción de la API
+
+Esta API se encarga de la prevención de fraudes en pagos de usuarios, realizando análisis sobre transacciones recientes. Utiliza una base de datos PostgreSQL para almacenar los pagos y la información de los usuarios, y un servicio externo para obtener tasas de conversión de moneda.
+
+Los servicios principales de la API incluyen:
+
+- Análisis de pagos rechazados en los últimos 7 días.
+- Conversión de montos de pagos a USD.
+- Validación de pagos rechazados durante las últimas 24 horas.
+
+## Variables de Entorno
+
+Revisar el archivo env.example.
+
 # Levantar la API con Docker
 
 Este documento proporciona los pasos necesarios para levantar la API utilizando Docker y Docker Compose, incluyendo la base de datos PostgreSQL. La configuración está preparada para ser ejecutada en entornos de desarrollo.
