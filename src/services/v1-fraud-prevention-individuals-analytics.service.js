@@ -48,7 +48,7 @@ class V1FraudPreventionIndividualsAnalyticsService {
         user_id: data.user_id,
         is_new_user: this.#isNewUser(data.createdAt),
         qty_rejected_1d: rulesPaymets.countPaymentRejectedLastDay, //Cantidad de pagos rechazados en el último dia.
-        total_amt_7d: rulesPaymets.totalAmountUsd, // Monto total en USD de pagos no rechazados
+        total_amt_7d: parseFloat(rulesPaymets.totalAmountUsd).toFixed(2), // Monto total en USD de pagos no rechazados
       });
     }    
     return response;
@@ -67,13 +67,12 @@ class V1FraudPreventionIndividualsAnalyticsService {
     let countPaymentRejectedLastDay = 0; // Contador de pagos rechazados en el último día
     
     for (const payment of userPayments) {
-      const data = payment.dataValues;
+      const data = payment. dataValues;
       const paymentDate = moment(data.createdAt);
       //Chequea que el pago sea del ultimo dia y que este en rechazado.
       if (data.state == PAYMENT_STATUS.REFUSED) {
         if (paymentDate.isAfter(dateSubtractOneDay)) {
           countPaymentRejectedLastDay += 1;
-          continue;
         }
       } else {
         //Si no es un pago rechazado.

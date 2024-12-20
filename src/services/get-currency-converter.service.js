@@ -13,8 +13,9 @@ class GetCurrencyConverterService {
       rate = await this.getKeyRedis(key);
       if (!rate) {
         console.info("Se consulta la tarifa para: " + key);
-        rate = await this.getConvertedCurrency(from, to);
-        this.setKeyRedis(key, rate.rates.USD.rate);
+        const rateFound = await this.getConvertedCurrency(from, to);
+        this.setKeyRedis(key, rateFound.rates.USD.rate);
+        rate = rateFound.rates.USD.rate;
       }
       return parseFloat(rate);
     } catch (error) {
