@@ -12,6 +12,10 @@ Los servicios principales de la API incluyen:
 
 Revisar el archivo env.example.
 
+## Documentación del repositorio.
+
+Este proyecto cuenta con su documentación en la ruta: /doc.
+
 # Levantar la API con Docker
 
 Este documento proporciona los pasos necesarios para levantar la API utilizando Docker y Docker Compose, incluyendo la base de datos PostgreSQL. La configuración está preparada para ser ejecutada en entornos de desarrollo.
