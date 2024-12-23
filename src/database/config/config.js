@@ -8,7 +8,7 @@ const configDB = {
     host: envDB.DB_HOST || "data-base-pg", // Nombre del contenedor de la base de datos
     port: envDB.DB_PORT || 5432, // Puerto de PostgreSQL
     dialect: "postgres",
-    logging: false
+    logging: false,
   },
   test: {
     username: envDB.DB_USER || "admin",
@@ -17,7 +17,7 @@ const configDB = {
     host: envDB.DB_HOST || "localhost",
     port: envDB.DB_PORT || 5432,
     dialect: "postgres",
-    logging: false
+    logging: false,
   },
   production: {
     username: envDB.DB_USER || "admin",
@@ -26,7 +26,7 @@ const configDB = {
     host: envDB.DB_HOST || "localhost",
     port: envDB.DB_PORT || 5432,
     dialect: "postgres",
-    logging: false
+    logging: false,
   },
 };
 

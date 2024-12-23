@@ -1,22 +1,16 @@
 const { PAYMENT_STATUS } = require("../helpers/constants");
-const { getKeyRedis, setKeyRedis } = require("../helpers/utils");
-const PaymentService = require("./db/payment.service");
 const UserService = require("./db/user.service");
 const moment = require("moment-timezone");
 const GetCurrencyConverterService = require("./get-currency-converter.service");
-const { ErrorConstructor } = require("../helpers/error-constructor");
-const GetCurrencyConverteConnector = require("./connectors/get-currency-converter.connector");
 
 class V1FraudPreventionIndividualsAnalyticsService {
   #userService;
-  #paymentService;
   #currencyConverterService;
   #currentDate = moment().endOf("day");
   #dateSubtractSevenDays = moment().subtract(7, "days").startOf("day");
 
   constructor() {
     this.#userService = new UserService();
-    this.#paymentService = new PaymentService();
     this.#currencyConverterService = new GetCurrencyConverterService();
   }
 
@@ -41,7 +35,7 @@ class V1FraudPreventionIndividualsAnalyticsService {
 
   async #buildData(users) {
     const response = [];
-    for (const user of users){
+    for (const user of users) {
       const data = user.dataValues;
       const rulesPaymets = await this.#applyRulesForPayments(data.payments);
       response.push({
@@ -50,7 +44,7 @@ class V1FraudPreventionIndividualsAnalyticsService {
         qty_rejected_1d: rulesPaymets.countPaymentRejectedLastDay, //Cantidad de pagos rechazados en el último dia.
         total_amt_7d: parseFloat(rulesPaymets.totalAmountUsd).toFixed(2), // Monto total en USD de pagos no rechazados
       });
-    }    
+    }
     return response;
   }
 
@@ -65,9 +59,9 @@ class V1FraudPreventionIndividualsAnalyticsService {
       .startOf("day"); // Un día atrás desde la fecha actual
     let totalAmountUsd = 0; // Para almacenar el monto total en USD
     let countPaymentRejectedLastDay = 0; // Contador de pagos rechazados en el último día
-    
+
     for (const payment of userPayments) {
-      const data = payment. dataValues;
+      const data = payment.dataValues;
       const paymentDate = moment(data.createdAt);
       //Chequea que el pago sea del ultimo dia y que este en rechazado.
       if (data.state == PAYMENT_STATUS.REFUSED) {
@@ -89,7 +83,7 @@ class V1FraudPreventionIndividualsAnalyticsService {
           }
         }
       }
-    };
+    }
 
     return { countPaymentRejectedLastDay, totalAmountUsd };
   }
@@ -97,10 +91,10 @@ class V1FraudPreventionIndividualsAnalyticsService {
   #buildResponse(pagination, data) {
     const { currentPage, perPage, total, totalPages } = pagination;
     return {
-      page: currentPage,
-      per_page: perPage,
-      total_pages: totalPages,
-      total_count: total,
+      page: parseInt(currentPage),
+      per_page: parseInt(perPage),
+      total_pages: parseInt(totalPages),
+      total_count: parseInt(total),
       data: data,
     };
   }

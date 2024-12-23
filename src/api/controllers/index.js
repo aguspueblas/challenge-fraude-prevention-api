@@ -5,5 +5,5 @@ const V1FPIndividualsAnalyticsController = require("./v1-fraud-prevention-indivi
 module.exports = {
   swaggerController: new SwaggerController(),
   V1FPIndividualsAnalyticsController: new V1FPIndividualsAnalyticsController(),
-  ErrorHandler
+  ErrorHandler,
 };

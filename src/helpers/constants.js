@@ -15,9 +15,10 @@ const SERVICE_UNAVAILABLE_ERROR = [
     ERROR_CODES: ["error-converter"],
     BODY: {
       error_code: "service_unavailable",
-      message: "Currency conversion service is not available. Please try again later..",
+      message:
+        "Currency conversion service is not available. Please try again later..",
     },
-  }
+  },
 ];
 // 404
 const NOT_FOUND_ERROR = [EXAMPLE_MAP_ERROR];

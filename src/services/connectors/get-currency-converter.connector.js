@@ -26,7 +26,7 @@ class GetCurrencyConverteConnector {
     };
   }
   delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
   async callConnector() {
     const options = {
@@ -40,7 +40,10 @@ class GetCurrencyConverteConnector {
     await this.delay(1000);
     return axios(options)
       .then((response) => {
-        console.info("Convertidor de moneda respondio con éxito.", response.data);
+        console.info(
+          "Convertidor de moneda respondio con éxito.",
+          response.data,
+        );
         return response.data;
       })
       .catch((error) => {
@@ -48,7 +51,7 @@ class GetCurrencyConverteConnector {
           "Ocurrio un error en CURRENCY-CONVERTER-CONTROLLER.js:",
           error.response,
         );
-        throw ErrorConstructor('error-converter', error.message,)
+        throw ErrorConstructor("error-converter", error.message);
       });
   }
 }

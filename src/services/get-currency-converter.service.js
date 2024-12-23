@@ -1,20 +1,22 @@
 const GetCurrencyConverteConnector = require("./connectors/get-currency-converter.connector");
-const redis = require("../../config/redis.config");
+const RedisService = require("./redis-service");
 class GetCurrencyConverterService {
   #service;
+  #redisService;
   constructor() {
     this.#service = new GetCurrencyConverteConnector();
+    this.#redisService = new RedisService();
   }
 
   async getRate(from, to) {
     try {
       let rate;
       const key = `${from}-${to}`;
-      rate = await this.getKeyRedis(key);
+      rate = await this.#redisService.getKeyRedis(key);
       if (!rate) {
         console.info("Se consulta la tarifa para: " + key);
         const rateFound = await this.getConvertedCurrency(from, to);
-        this.setKeyRedis(key, rateFound.rates.USD.rate);
+        this.#redisService.setKeyRedis(key, rateFound.rates.USD.rate);
         rate = rateFound.rates.USD.rate;
       }
       return parseFloat(rate);
@@ -24,16 +26,6 @@ class GetCurrencyConverterService {
     }
   }
 
-  // Función para obtener el valor de Redis
-  async getKeyRedis(key) {
-    const value = await redis.get(key);
-    return value ? JSON.parse(value) : null; // Si existe, retorna el valor, sino retorna null
-  }
-
-  // Función para establecer el valor en Redis con un tiempo de expiración
-  async setKeyRedis(key, value, expirationTime = 300) {
-    await redis.set(key, JSON.stringify(value), "EX", expirationTime);
-  }
   async getConvertedCurrency(from, to) {
     try {
       this.#service.setParams(from, to);

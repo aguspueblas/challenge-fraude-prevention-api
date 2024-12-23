@@ -27,7 +27,9 @@ class ErrorHandler {
           preconditionFailedResponse,
         ),
         notFoundResponse.getIfIsNotFoundError.bind(notFoundResponse),
-        serviceUnavailableResponse.getIsServiceUnavailableError.bind(serviceUnavailableResponse),
+        serviceUnavailableResponse.getIsServiceUnavailableError.bind(
+          serviceUnavailableResponse,
+        ),
       ];
       for (const errorFunction of errorFinders) {
         const errorDetails = errorFunction(err.code, err.dextails);

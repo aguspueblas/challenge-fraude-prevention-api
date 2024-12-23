@@ -13,7 +13,7 @@ class ServiceUnavailable {
     this.#errorCode = "service_unavailable";
   }
 
-  setErrorCode (errorCode) {
+  setErrorCode(errorCode) {
     this.#errorCode = errorCode;
   }
   setMessage(message) {
